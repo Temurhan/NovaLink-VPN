@@ -1,0 +1,17 @@
+# Компиляция
+build/
+cmake-build-debug/
+*.o
+*.a
+*.so
+novalink_server
+novalink_client
+
+# Секреты
+*.key
+*.crt
+*.pemgit add .
+
+# Системные файлы
+.DS_Store
+.idea/
