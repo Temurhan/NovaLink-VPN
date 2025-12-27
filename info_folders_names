@@ -1,0 +1,31 @@
+NovaLink/
+├── CMakeLists.txt              # Главный файл сборки
+├── bin/                        # Сюда будут падать готовые .exe файлы (игнорится git)
+├── configs/                    # Конфиги (client.conf, server.conf)
+├── core/                       # Общая логика (Ядро)
+│   ├── include/                # Только .hpp файлы (Интерфейсы)
+│   │   ├── EpollEngine.hpp
+│   │   ├── NetlinkCommander.hpp
+│   │   └── RouteManager.hpp
+│   └── src/                    # Только .cpp файлы (Реализация)
+│       ├── EpollEngine.cpp
+│       ├── NetlinkCommander.cpp
+│       └── RouteManager.cpp
+├── client/                     # Клиентское приложение
+│   ├── main.cpp
+│   ├── internal/
+│   │   ├── tun/                # Работа с TUN/TAP
+│   │   │   ├── TunHandler.hpp
+│   │   │   └── TunHandler.cpp
+│   │   └── outbound/           # Протоколы (VLESS, Reality)
+│   │       ├── VlessRealityHandler.hpp
+│   │       └── VlessRealityHandler.cpp
+|
+├── server/                     # Серверное приложение
+│   ├── main.cpp
+│   └── internal/
+│       └── inbound/            # Прием соединений
+├── manager-api/                # API для управления (Crow/SQLite)
+│   ├── main.cpp
+│   └── database/
+└── third_party/                # Внешние либы (если не через систему)
