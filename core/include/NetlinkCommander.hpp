@@ -9,7 +9,7 @@
 #include <cstring>
 #include <stdexcept>
 
-namespace NovaLink { // ДОБАВЛЕНО: теперь RouteManager его увидит
+namespace NovaLink {
 
 class NetlinkCommander {
 private:
@@ -81,8 +81,7 @@ public:
         }
 
         close(sock);
-        // Примечание: для 100% надежности здесь можно добавить recv() для проверки ACK от ядра
     }
 };
 
-} // namespace NovaLink
+}

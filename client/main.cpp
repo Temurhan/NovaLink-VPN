@@ -9,9 +9,6 @@
 
 using json = nlohmann::json;
 using namespace NovaLink;
-
-// --- 1. ВСПОМОГАТЕЛЬНЫЙ КОД ДЛЯ API ---
-
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     ((std::string*)userp)->append((char*)contents, size * nmemb);
     return size * nmemb;
@@ -44,42 +41,31 @@ VpnConfig fetch_vpn_config(const std::string& api_url) {
                 config.uuid = j.at("uuid").get<std::string>();
                 config.valid = true;
             } catch (...) {
-                std::cerr << "[!] Ошибка парсинга JSON настроек" << std::endl;
+                std::cerr << "[!] Error parsing JSON settings" << std::endl;
             }
         }
         curl_easy_cleanup(curl);
     }
     return config;
 }
-
-// --- 2. ГЛАВНЫЙ ЦИКЛ ПРОГРАММЫ ---
-
 int main() {
     std::cout << "=== NovaLink Client Starting ===" << std::endl;
-
-    // ШАГ 1: Получаем настройки от Manager-API
-    // Замени IP на адрес своего VPS, где запущен Manager-API
-    VpnConfig config = fetch_vpn_config("http://твой_vps_ip:8080/api/v1/config");
-
+    //This's an IP address for testing, not the original one, bro :)
+    // VpnConfig config = fetch_vpn_config("http://188.68.222.128:8080/api/v1/config");
+    VpnConfig config = fetch_vpn_config("http://your_vps_ip:8080/api/v1/config");
     if (!config.valid) {
-        std::cerr << "[!] Не удалось получить конфигурацию. Проверьте интернет или API." << std::endl;
+        std::cerr << "[!] Failed to retrieve configuration. Please check internet or API connection.." << std::endl;
         return 1;
     }
-
-    // ШАГ 2: Инициализация TUN интерфейса
     TunHandler tun;
     if (!tun.open_tun("nova_cli")) {
-        std::cerr << "[!] Ошибка создания TUN интерфейса (нужен sudo!)" << std::endl;
+        std::cerr << "[!] Error creating TUN interface (sudo required!)" << std::endl;
         return 1;
     }
-
-    // Настройка IP для TUN (вручную для теста)
     system("ip addr add 10.8.0.2/24 dev nova_cli");
     system("ip link set dev nova_cli up");
 
-    // Здесь можно вызвать нашу функцию prevent_dns_leaks("nova_cli")
 
-    // ШАГ 3: Инициализация VLESS обработчика
     VlessRealityHandler vless;
     OutboundConfig outbound;
     outbound.address = config.server_ip;
@@ -87,15 +73,11 @@ int main() {
     outbound.uuid = config.uuid;
 
     if (!vless.connect(outbound)) {
-        std::cerr << "[!] Ошибка TLS подключения к серверу" << std::endl;
+        std::cerr << "[!] TLS connection error with server" << std::endl;
         return 1;
     }
 
-    std::cout << "[+] Туннель установлен! Трафик шифруется." << std::endl;
-
-    // ШАГ 4: Потоки передачи данных
-
-    // Поток: TUN -> VLESS (Отправка)
+    std::cout << "[+] The tunnel is established! Traffic is encrypted." << std::endl;
     std::thread writer([&]() {
         uint8_t buf[4096];
         while (true) {
@@ -106,7 +88,6 @@ int main() {
         }
     });
 
-    // Поток: VLESS -> TUN (Прием)
     std::thread reader([&]() {
         uint8_t buf[4096];
         while (true) {

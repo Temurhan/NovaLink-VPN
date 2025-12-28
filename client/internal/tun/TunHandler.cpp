@@ -9,7 +9,7 @@
 #include <linux/if_tun.h>
 #include <algorithm>
 
-namespace NovaLink { // <-- ДОБАВЬ ЭТО
+namespace NovaLink {
 
 TunHandler::TunHandler() : tun_fd(-1), actual_name("") {}
 
@@ -84,4 +84,4 @@ ssize_t TunHandler::write_packet(const uint8_t* buffer, size_t size) {
     return write(tun_fd, buffer, size);
 }
 
-} // <-- И ЭТУ СКОБКУ В КОНЦЕ
+}

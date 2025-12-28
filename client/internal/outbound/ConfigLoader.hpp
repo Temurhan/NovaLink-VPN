@@ -3,12 +3,10 @@
 #include <sstream>
 #include <string>
 #include <iostream>
-#include <algorithm> // для std::find_if
+#include <algorithm>
 #include "protocol.h"
 
 namespace NovaLink {
-
-    // Вспомогательная функция для удаления пробелов по краям
     inline std::string trim(const std::string& s) {
         auto start = std::find_if(s.begin(), s.end(), [](unsigned char ch) {
             return !std::isspace(ch);
@@ -21,12 +19,10 @@ namespace NovaLink {
 
     inline OutboundConfig parse_config(const std::string& filename) {
         OutboundConfig config;
-        // Установим значения по умолчанию
         config.port = 443;
 
         std::ifstream file(filename);
         if (!file.is_open()) {
-            // Полезно для отладки в CLion:
             std::cerr << "[!] Warning: Config not found at " << filename << std::endl;
             return config;
         }

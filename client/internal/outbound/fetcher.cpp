@@ -1,8 +1,6 @@
 #include "fetcher.hpp"
 #include <curl/curl.h>
 #include <iostream>
-
-// Если в hpp есть namespace, то и здесь он должен быть
 namespace NovaLink {
 
     size_t DiscoveryService::WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
@@ -40,4 +38,4 @@ namespace NovaLink {
         return "";
     }
 
-} // namespace NovaLink
+}
